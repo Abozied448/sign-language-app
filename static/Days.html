@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أيام الأسبوع</title>
+  <style>
+    :root {
+      --main-color: #004e64;  /* كحلي بترولي */
+      --accent-color: #00bfa6; /* لمسة بترولية */
+      --hover-color: #008c99;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #002b36, var(--main-color));
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-nav {
+      background-color: transparent;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-nav:hover {
+      background-color: var(--accent-color);
+      color: #000;
+    }
+
+    h1 {
+      margin: 20px 0;
+      text-shadow: 0 0 15px var(--accent-color);
+    }
+
+    #search-input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--accent-color);
+      background-color: #122;
+      color: white;
+      box-shadow: 0 0 5px var(--accent-color);
+      min-width: 200px;
+    }
+
+    #days-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px;
+    }
+
+    .day-button {
+      background: rgba(0, 191, 166, 0.1);
+      border: 2px solid var(--accent-color);
+      color: #fff;
+      padding: 15px 24px;
+      border-radius: 15px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      backdrop-filter: blur(5px);
+    }
+
+    .day-button:hover {
+      background: var(--hover-color);
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    #video-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      animation: fadeIn 0.4s ease;
+    }
+
+    #video-modal video {
+      width: 80%;
+      max-width: 600px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px var(--accent-color);
+      transform: scale(0.8);
+      animation: zoomIn 0.4s ease forwards;
+    }
+
+    #close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff4444;
+    }
+
+    #close-btn:hover {
+      background: #ff0000;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media(max-width:600px){
+      #search-input {
+        width: 90%;
+        margin-top: 10px;
+      }
+      .btn-nav {
+        width: 90%;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button class="btn-nav" onclick="location.href='index.html'">الرئيسية</button>
+    <input type="text" id="search-input" placeholder="ابحث عن يوم...">
+  </header>
+
+  <h1>أيام الأسبوع</h1>
+
+  <div id="days-container"></div>
+
+  <div id="video-modal">
+    <button id="close-btn">إغلاق</button>
+    <video id="video-player" controls></video>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('يرجى تسجيل الدخول أولاً للوصول إلى هذه الصفحة.');
+      window.location.href = 'login.html';
+    }
+
+    const days = [
+      "السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"
+    ];
+
+    const container = document.getElementById("days-container");
+    const videoModal = document.getElementById("video-modal");
+    const videoPlayer = document.getElementById("video-player");
+    const closeBtn = document.getElementById("close-btn");
+    const searchInput = document.getElementById("search-input");
+
+    function renderButtons(filter = '') {
+      container.innerHTML = '';
+      days.map((day, index) => ({ day, index: index + 1 }))
+        .filter(item => item.day.includes(filter))
+        .forEach(item => {
+          const btn = document.createElement("button");
+          btn.className = "day-button";
+          btn.textContent = item.day;
+          btn.onclick = () => {
+            videoPlayer.src = `Days_videos/${item.index}.mp4`;
+            videoModal.style.display = 'flex';
+            videoPlayer.load();
+            videoPlayer.play().catch(err => {
+              alert("تعذر تشغيل الفيديو.");
+            });
+          };
+          container.appendChild(btn);
+        });
+    }
+
+    closeBtn.onclick = () => {
+      videoPlayer.pause();
+      videoPlayer.src = '';
+      videoModal.style.display = 'none';
+    };
+
+    searchInput.addEventListener("input", () => {
+      const value = searchInput.value.trim();
+      renderButtons(value);
+    });
+
+    renderButtons();
+  </script>
+
+</body>
+</html>

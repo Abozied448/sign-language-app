@@ -1,0 +1,560 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مشروع لغة الإشارة</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --navy: #1B263B;
+      --petrol: #0E8388;
+      --white: #ffffff;
+      --gray-light: #f1f1f1;
+      --gray-dark: #333;
+      --footer-bg: #0E1C2F;
+    }
+
+    [data-theme="light"] {
+      --navy: #EAF6F6;
+      --petrol: #0E8388;
+      --white: #ffffff;
+      --gray-light: #eaeaea;
+      --gray-dark: #111;
+      --footer-bg: #d9f2f2;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+      transition: 0.3s ease;
+    }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: var(--navy);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loader div {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid var(--petrol);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {transform: rotate(0deg);}
+      100% {transform: rotate(360deg);}
+    }
+
+    nav {
+      width: 100%;
+      background: var(--petrol);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    nav a, nav button {
+      color: #fff;
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: 0.3s ease;
+    }
+
+    nav a:hover, nav button:hover {
+      background: #2E4F4F;
+      transform: translateY(-3px);
+    }
+
+    .mode-toggle {
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+      text-align: center;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .header-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .header-section img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      transition: 0.5s;
+    }
+
+    .header-section img:hover {
+      transform: scale(1.1);
+    }
+
+    h1 {
+      font-size: 36px;
+      color: var(--petrol);
+      margin-bottom: 20px;
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .links a, .links button {
+      padding: 20px;
+      font-size: 20px;
+      background: var(--white);
+      border-radius: 15px;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      color: var(--gray-dark);
+      font-weight: 600;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: 0.3s ease;
+    }
+
+    .links a:hover, .links button:hover {
+      background: var(--petrol);
+      color: #fff;
+      transform: translateY(-5px);
+    }
+
+    .stages-link {
+      background: #FF6F61;
+      color: #fff;
+    }
+
+    .stages-link:hover {
+      background: var(--petrol);
+    }
+
+    p {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #cccccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      color: #aaa;
+      background: var(--footer-bg);
+      font-size: 16px;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    }
+
+    @keyframes fadeIn {
+      0% {opacity: 0; transform: translateY(-20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 28px; }
+      .header-section img { width: 140px; height: 140px; }
+      nav a, nav button { font-size: 16px; padding: 8px 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="loader" id="loader">
+  <div></div>
+</div>
+
+<nav>
+  <div class="nav-links" id="navbar"></div>
+  <div class="mode-toggle" onclick="toggleTheme()" title="تغيير الوضع">
+    <i class="fas fa-adjust"></i>
+  </div>
+</nav>
+
+<main>
+  <div class="header-section">
+    <img src="img/Screenshot 2025-06-11 045447.png" alt="صورة يمين">
+    <h1>مرحباً بك في مشروع لغة الإشارة</h1>
+    <img src="img/Screenshot 2025-06-11 045519.png" alt="صورة يسار">
+  </div>
+
+  <div class="links" id="page-links"></div>
+</main>
+
+<footer>
+  بإعداد المهندس حسن حسام ✨
+</footer>
+
+<script>
+  window.addEventListener("load", function() {
+    document.getElementById("loader").style.display = "none";
+  });
+
+  const navbar = document.getElementById('navbar');
+  const pageLinks = document.getElementById('page-links');
+
+  function createNavLink(text, href, extraClass = '', icon = '') {
+    const a = document.createElement('a');
+    a.href = href;
+    a.className = extraClass;
+    a.innerHTML = `<i class="${icon}"></i> ${text}`;
+    return a;
+  }
+
+  function createNavButton(text, onClick) {
+    const btn = document.createElement('button');
+    btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> ${text}`;
+    btn.addEventListener('click', onClick);
+    return btn;
+  }
+
+  function getToken() {
+    return localStorage.getItem('access_token');
+  }
+
+  function buildNavbar() {
+    navbar.innerHTML = '';
+    const token = getToken();
+    if (token) {
+      navbar.appendChild(createNavButton('تسجيل خروج', () => {
+        localStorage.removeItem('access_token');
+        buildNavbar();
+        buildPageLinks();
+        alert('تم تسجيل الخروج');
+      }));
+    } else {
+      navbar.appendChild(createNavLink('تسجيل الدخول', '/static/login.html', '', 'fas fa-sign-in-alt'));
+      navbar.appendChild(createNavLink('تسجيل حساب جديد', '/static/register.html', '', 'fas fa-user-plus'));
+    }
+  }
+
+  function buildPageLinks() {
+    pageLinks.innerHTML = '';
+    const token = getToken();
+    pageLinks.appendChild(createNavLink('فتح الكاميرا', '/static/open_camera.html', '', 'fas fa-camera'));
+
+    if (token) {
+      pageLinks.appendChild(createNavLink('تعلم الحروف', '/static/learn_letters.html', '', 'fas fa-book-open'));
+      pageLinks.appendChild(createNavLink('الفيديوهات', '/static/videos.html', '', 'fas fa-video'));
+      pageLinks.appendChild(createNavLink('المراحل', '/static/stages.html', 'stages-link', 'fas fa-layer-group'));
+      pageLinks.appendChild(createNavLink('أسماء الله الحسنى', '/static/Names of Allah.html', '', 'fas fa-star-and-crescent'));
+      pageLinks.appendChild(createNavLink('أيام الأسبوع', '/static/Days.html', '', 'fas fa-calendar-day'));
+    } else {
+      const info = document.createElement('p');
+      info.textContent = 'يرجى تسجيل الدخول أو التسجيل للوصول إلى باقي الصفحات.';
+      pageLinks.appendChild(info);
+    }
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
+  }
+
+  buildNavbar();
+  buildPageLinks();
+</script>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مشروع لغة الإشارة - Responsive</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --navy: #1B263B;
+      --petrol: #0E8388;
+      --white: #ffffff;
+      --gray-light: #f1f1f1;
+      --gray-dark: #333;
+      --footer-bg: #0E1C2F;
+    }
+    [data-theme="light"] {
+      --navy: #EAF6F6;
+      --petrol: #0E8388;
+      --white: #ffffff;
+      --gray-light: #eaeaea;
+      --gray-dark: #111;
+      --footer-bg: #d9f2f2;
+    }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+      transition: 0.3s ease;
+    }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    nav {
+      width: 100%;
+      background: var(--petrol);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    nav a, nav button {
+      color: #fff;
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: 0.3s ease;
+    }
+    nav a:hover, nav button:hover {
+      background: #2E4F4F;
+      transform: translateY(-3px);
+    }
+    .mode-toggle {
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .menu-toggle {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+      text-align: center;
+    }
+    .header-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .header-section img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      transition: 0.5s;
+    }
+    .header-section img:hover { transform: scale(1.1); }
+    h1 { font-size: 32px; color: var(--petrol); margin-bottom: 20px; }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .links a, .links button {
+      padding: 18px;
+      font-size: 18px;
+      background: var(--white);
+      border-radius: 12px;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      color: var(--gray-dark);
+      font-weight: 600;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s ease;
+    }
+    .links a:hover, .links button:hover {
+      background: var(--petrol);
+      color: #fff;
+      transform: translateY(-5px);
+    }
+    .stages-link { background: #FF6F61; color: #fff; }
+    .stages-link:hover { background: var(--petrol); }
+    footer {
+      text-align: center;
+      padding: 15px;
+      color: #aaa;
+      background: var(--footer-bg);
+      font-size: 16px;
+    }
+    @media(max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background: var(--petrol);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      }
+      .nav-links.active { display: flex; }
+      .menu-toggle { display: block; }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <div class="menu-toggle" onclick="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </div>
+  <div class="nav-links" id="navbar"></div>
+  <div class="mode-toggle" onclick="toggleTheme()" title="تغيير الوضع">
+    <i class="fas fa-adjust"></i>
+  </div>
+</nav>
+
+<main>
+  <div class="header-section">
+    <img src="img/Screenshot 2025-06-11 045447.png" alt="صورة يمين">
+    <h1>مشروع لغة الإشارة</h1>
+    <img src="img/Screenshot 2025-06-11 045519.png" alt="صورة يسار">
+  </div>
+  <div class="links" id="page-links"></div>
+</main>
+
+<footer>بإعداد المهندس حسن حسام ✨</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const pageLinks = document.getElementById('page-links');
+  function createNavLink(text, href, extraClass = '', icon = '') {
+    const a = document.createElement('a');
+    a.href = href;
+    a.className = extraClass;
+    a.innerHTML = `<i class="${icon}"></i> ${text}`;
+    return a;
+  }
+  function createNavButton(text, onClick) {
+    const btn = document.createElement('button');
+    btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> ${text}`;
+    btn.addEventListener('click', onClick);
+    return btn;
+  }
+  function getToken() { return localStorage.getItem('access_token'); }
+  function buildNavbar() {
+    navbar.innerHTML = '';
+    const token = getToken();
+    if (token) {
+      navbar.appendChild(createNavButton('تسجيل خروج', () => {
+        localStorage.removeItem('access_token');
+        buildNavbar(); buildPageLinks(); alert('تم تسجيل الخروج');
+      }));
+    } else {
+      navbar.appendChild(createNavLink('تسجيل الدخول', '/static/login.html', '', 'fas fa-sign-in-alt'));
+      navbar.appendChild(createNavLink('تسجيل حساب جديد', '/static/register.html', '', 'fas fa-user-plus'));
+    }
+  }
+  function buildPageLinks() {
+    pageLinks.innerHTML = '';
+    const token = getToken();
+    pageLinks.appendChild(createNavLink('فتح الكاميرا', '/static/open_camera.html', '', 'fas fa-camera'));
+    if (token) {
+      pageLinks.appendChild(createNavLink('تعلم الحروف', '/static/learn_letters.html', '', 'fas fa-book-open'));
+      pageLinks.appendChild(createNavLink('الفيديوهات', '/static/videos.html', '', 'fas fa-video'));
+      pageLinks.appendChild(createNavLink('المراحل', '/static/stages.html', 'stages-link', 'fas fa-layer-group'));
+      pageLinks.appendChild(createNavLink('أسماء الله الحسنى', '/static/Names of Allah.html', '', 'fas fa-star-and-crescent'));
+      pageLinks.appendChild(createNavLink('أيام الأسبوع', '/static/Days.html', '', 'fas fa-calendar-day'));
+      pageLinks.appendChild(createNavLink('الملابس', '/static/Clothes.html', '', 'fas fa-tshirt'));
+      pageLinks.appendChild(createNavLink('العائلة', '/static/Family.html', '', 'fas fa-users'));
+      pageLinks.appendChild(createNavLink('المال', '/static/Money.html', '', 'fas fa-money-bill-wave'));
+      pageLinks.appendChild(createNavLink('التواصل الاجتماعي', '/static/SocialMedia.html', '', 'fas fa-hashtag'));
+      pageLinks.appendChild(createNavLink('المركبات', '/static/vehicles.html', '', 'fas fa-car'));
+      pageLinks.appendChild(createNavLink('الرياضة', '/static/sports.html', '', 'fas fa-dumbbell'));
+      pageLinks.appendChild(createNavLink('الألوان', '/static/Color.html', '', 'fas fa-palette'));
+    } else {
+      const info = document.createElement('p');
+      info.textContent = 'يرجى تسجيل الدخول أو التسجيل للوصول إلى باقي الصفحات.';
+      pageLinks.appendChild(info);
+    }
+  }
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
+  }
+  function toggleMenu() {
+    navbar.classList.toggle('active');
+  }
+  buildNavbar();
+  buildPageLinks();
+</script>
+
+</body>
+</html>

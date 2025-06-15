@@ -1,0 +1,205 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stages</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 30px; }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            window.location.href = "/static/login.html";
+        }
+
+        async function loadProgress() {
+            const response = await fetch("/api/progress", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                alert("Error fetching progress");
+                return;
+            }
+
+            const data = await response.json();
+            updateButtons(data);
+        }
+
+        function updateButtons(progress) {
+            document.getElementById("food").disabled = false;
+
+            if (progress.food >= 90) {
+                document.getElementById("animals").disabled = false;
+            } else {
+                document.getElementById("animals").disabled = true;
+            }
+
+            if (progress.animals >= 90) {
+                document.getElementById("time").disabled = false;
+            } else {
+                document.getElementById("time").disabled = true;
+            }
+        }
+
+        function goToQuiz(lesson) {
+            window.location.href = `/static/quiz.html#${lesson}`;
+        }
+
+        window.onload = loadProgress;
+    </script>
+</head>
+<body>
+    <h1>Stages</h1>
+    <ul>
+        <li><button id="food" onclick="goToQuiz('food')">Food Quiz</button></li>
+        <li><button id="animals" onclick="goToQuiz('animals')">Animals Quiz</button></li> 
+        <li><button id="time" onclick="goToQuiz('time')">Time Quiz</button></li>
+    </ul>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>المراحل التعليمية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --primary-color: #0074b7; /* أزرق */
+            --primary-hover: #005f99; /* أزرق داكن */
+            --disabled-color: #bdc3c7;
+            --background-color: #0a1a2f; /* كحلي */
+            --text-color: #ffffff;
+            --font-family: 'Segoe UI', Arial, sans-serif;
+            --button-shadow: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+            font-size: 32px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .stage-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--button-shadow);
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--button-shadow);
+        }
+
+        button:disabled {
+            background-color: var(--disabled-color);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @media (max-width: 600px) {
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>اختر المرحلة التعليمية</h1>
+
+    <div class="stage-buttons">
+        <button id="food" onclick="goToQuiz('food')">اختبار الطعام</button>
+        <button id="animals" onclick="goToQuiz('animals')">اختبار الحيوانات</button>
+        <button id="time" onclick="goToQuiz('time')">اختبار الوقت</button>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            window.location.href = "/static/login.html";
+        }
+
+        async function loadProgress() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/progress", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error("فشل تحميل التقدم");
+                }
+
+                const progress = await response.json();
+                updateButtons(progress);
+            } catch (err) {
+                alert("حدث خطأ أثناء تحميل التقدم.");
+                console.error(err);
+            }
+        }
+
+        function updateButtons(progress) {
+            document.getElementById("food").disabled = false;
+            document.getElementById("animals").disabled = !(progress.food >= 90);
+            document.getElementById("time").disabled = !(progress.animals >= 90);
+        }
+
+        function goToQuiz(lesson) {
+            window.location.href = `/static/quiz.html?lesson=${lesson}`;
+        }
+
+        window.onload = loadProgress;
+    </script>
+
+</body>
+</html>

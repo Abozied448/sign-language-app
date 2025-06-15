@@ -1,0 +1,297 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 30px; }
+        .question { margin: 20px 0; }
+        .option-button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option-button:hover { background-color: #2980b9; }
+        .quiz-image {
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto 20px auto;
+            border: 3px solid #333;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="quiz-title">Quiz</h1>
+    <div id="quiz-container"></div>
+
+    <script>
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            window.location.href = "/static/login.html";
+        }
+
+        const lesson = window.location.hash.substring(1);
+        let questions = [];
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestions() {
+            if (lesson === 'food') {
+                questions = [
+                    { image: 'apple.png', options: ["Apple", "Banana", "Orange", "Carrot"], answer: "Apple" },
+                    { image: 'bread.png', options: ["Bread", "Meat", "Rice", "Milk"], answer: "Bread" }
+                ];
+            } else if (lesson === 'animals') {
+                questions = [
+                    { image: 'dog.png', options: ["Dog", "Cat", "Mouse", "Elephant"], answer: "Dog" },
+                    { image: 'cat.png', options: ["Cat", "Dog", "Tiger", "Cow"], answer: "Cat" }
+                ];
+            } else if (lesson === 'time') {
+                questions = [
+                    { image: 'one.png', options: ["One", "Two", "Three", "Four"], answer: "One" },
+                    { image: 'two.png', options: ["Two", "Three", "One", "Four"], answer: "Two" }
+                ];
+            } else {
+                alert("Invalid stage.");
+                return;
+            }
+
+            document.getElementById("quiz-title").innerText = `Quiz - ${lesson.toUpperCase()}`;
+            startQuiz();
+        }
+
+        function startQuiz() {
+            if (currentQuestion >= questions.length) {
+                showResult();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+            const imgPath = `/static/quiz/${lesson}/${q.image}`;
+            document.getElementById("quiz-container").innerHTML = `
+                <div class="question">
+                    <h3>Q${currentQuestion + 1}:</h3>
+                    <img src="${imgPath}" class="quiz-image" alt="Quiz Image">
+                </div>
+                ${q.options.map(opt => `<button class="option-button" onclick="submitAnswer('${opt}')">${opt}</button>`).join('')}
+            `;
+        }
+
+        function submitAnswer(selected) {
+            if (selected === questions[currentQuestion].answer) {
+                score++;
+            }
+            currentQuestion++;
+            startQuiz();
+        }
+
+        function showResult() {
+            const percent = (score / questions.length) * 100;
+            document.getElementById("quiz-container").innerHTML = `
+                <h2>Your Score: ${score}/${questions.length}</h2>
+                <h3 style="color: ${percent >= 90 ? 'green' : 'red'}">
+                    ${percent >= 90 ? "✅ You Passed!" : "❌ Try Again!"}
+                </h3>
+            `;
+
+            if (percent >= 90) {
+                submitProgress();
+            }
+        }
+
+        function submitProgress() {
+            fetch('/api/submit_quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    lesson_slug: lesson,
+                    score: score
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit progress');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Progress submitted:", data);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 30px; }
+        .question { margin: 20px 0; }
+        .option-button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option-button:hover { background-color: #2980b9; }
+        .quiz-image {
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto 20px auto;
+            border: 3px solid #333;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        .action-button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .try-again { background-color: #f39c12; color: white; }
+        .submit { background-color: #2ecc71; color: white; }
+    </style>
+</head>
+<body>
+
+<h1 id="quiz-title">Quiz</h1>
+<div id="quiz-container"></div>
+
+<script>
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "/static/login.html";
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lesson = urlParams.get("lesson");
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestions() {
+        if (lesson === 'food') {
+            questions = [
+                { image: '/static/quiz/food/apple.png', options: ["Apple", "Banana", "Orange", "Carrot"], answer: "Apple" }
+            ];
+        } else if (lesson === 'animals') {
+            questions = [
+                { image: '/static/quiz/animals/dog.png', options: ["Dog", "Cat", "Mouse", "Elephant"], answer: "Dog" }
+            ];
+        } else if (lesson === 'time') {
+            questions = [
+                { image: '/static/quiz/time/one.png', options: ["One", "Two", "Three", "Four"], answer: "One" }
+            ];
+        } else {
+            alert("Invalid stage.");
+            return;
+        }
+
+        document.getElementById("quiz-title").innerText = `Quiz - ${lesson.toUpperCase()}`;
+        startQuiz();
+    }
+
+    function startQuiz() {
+        if (currentQuestion >= questions.length) {
+            showResult();
+            return;
+        }
+
+        const q = questions[currentQuestion];
+        const imgPath = q.image;
+        document.getElementById("quiz-container").innerHTML = `
+            <div class="question">
+                <h3>Q${currentQuestion + 1}:</h3>
+                <img src="${imgPath}" class="quiz-image" alt="Quiz Image">
+            </div>
+            ${q.options.map(opt => `<button class="option-button" onclick="submitAnswer('${opt}')">${opt}</button>`).join('')}
+        `;
+    }
+
+    function submitAnswer(selected) {
+        if (selected === questions[currentQuestion].answer) {
+            score++;
+        }
+        currentQuestion++;
+        startQuiz();
+    }
+
+    function showResult() {
+        const percent = (score / questions.length) * 100;
+        const passed = percent >= 90;
+
+        document.getElementById("quiz-container").innerHTML = `
+            <h2>Your Score: ${score}/${questions.length}</h2>
+            <h3 style="color: ${passed ? 'green' : 'red'}">
+                ${passed ? "✅ You Passed!" : "❌ Try Again!"}
+            </h3>
+            <button class="action-button try-again" onclick="restartQuiz()">🔄 Try Again</button>
+            <button class="action-button submit" onclick="submitProgress()">✅ Submit</button>
+        `;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        startQuiz();
+    }
+
+    function submitProgress() {
+        fetch('http://127.0.0.1:8000/api/submit_quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                lesson_slug: lesson,
+                score: score
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to submit progress');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("✅ Progress submitted successfully.");
+            window.location.href = "/static/stages.html";
+        })
+        .catch(err => {
+            console.error(err);
+            alert("❌ Error submitting progress.");
+        });
+    }
+
+    loadQuestions();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Time Quiz with Images</title>
+    <script>
+        const questions = [
+            { img: "static/quiz/img_quiz/hamburger.jpg", options: ["1:00", "2:00", "3:00", "hamburger"], answer: "hamburger" },
+            { img: "static/quiz/img_quiz/food.jpg", options: ["2:00", "5:00", "12:00", "food"], answer: "food" },
+            // { img: "static/quiz/img_quiz/soup.jpg", options: ["1:00", "4:00", "6:00", "10:00"], answer: "4:00" },
+            // { img: "static/quiz/img_quiz/soup.jpg", options: ["7:00", "6:00", "5:00", "3:00"], answer: "6:00" },
+            // { img: "static/quiz/img_quiz/soup.jpg", options: ["8:00", "7:00", "9:00", "6:00"], answer: "8:00" },
+            // { img: "images/10oclock.png", options: ["10:00", "11:00", "1:00", "9:00"], answer: "10:00" },
+            // { img: "images/11oclock.png", options: ["11:00", "12:00", "10:00", "2:00"], answer: "11:00" },
+            // { img: "images/12oclock.png", options: ["12:00", "1:00", "3:00", "5:00"], answer: "12:00" },
+            // { img: "images/3oclock.png", options: ["3:00", "6:00", "9:00", "12:00"], answer: "3:00" },
+            // { img: "images/9oclock.png", options: ["9:00", "6:00", "4:00", "11:00"], answer: "9:00" }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = questions[current];
+            document.getElementById("question").innerHTML = `<img src="${q.img}" alt="Clock Image" id="question-img" />`;
+            const options = document.getElementById("options");
+            options.innerHTML = "";
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    if (opt === q.answer) score++;
+                    current++;
+                    if (current < questions.length) loadQuestion();
+                    else showResult();
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        function showResult() {
+            const percent = (score / questions.length) * 100;
+            document.getElementById("quiz").innerHTML = `
+                <h2>Your Score: ${score} / ${questions.length}</h2>
+                <h3 style="color: ${percent >= 90 ? '#2ecc71' : '#e74c3c'}">
+                    ${percent >= 90 ? "✅ You Passed!" : "❌ Try Again!"}
+                </h3>
+            `;
+        }
+
+        window.onload = loadQuestion;
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f8ff;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        #quiz {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #question-img {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 2px solid #555;
+        }
+        #options button {
+            display: block;
+            margin: 15px auto;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 80%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+        #options button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>⏰ Time Quiz</h1>
+    <div id="quiz">
+        <div id="question"></div>
+        <div id="options"></div>
+    </div>
+</body>
+</html>

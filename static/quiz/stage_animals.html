@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animals Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #081b29, #00bfa6);
+            margin: 0;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 5px #000;
+        }
+        #quiz {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            max-width: 600px;
+            margin: auto;
+        }
+        #question-img {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #000;
+        }
+        #options button {
+            display: block;
+            margin: 15px auto;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #00bfa6;
+            color: #081b29;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            width: 80%;
+        }
+        #options button:hover {
+            background: #fff;
+            color: #00bfa6;
+            transform: scale(1.05);
+        }
+    </style>
+
+    <script>
+        const questions = [
+            { img: "static/quiz/img_quiz/pizza.jpg", options: ["Lion", "Tiger", "Leopard", "pizza"], answer: "pizza" },
+            { img: "static/quiz/img_quiz/meat.jpg", options: ["Elephant", "Rhino", "Hippo", "meat"], answer: "meat" },
+            { img: "static/quiz/img_quiz/cook.jpg", options: ["Giraffe", "Camel", "Deer", "cook"], answer: "cook" },
+            // { img: "static/quiz/img_quiz/soup.jpg", options: ["Penguin", "Seagull", "Albatross", "Pelican"], answer: "Penguin" },
+            // { img: "static/quiz/img_quiz/soup.jpg", options: ["Zebra", "Horse", "Donkey", "Mule"], answer: "Zebra" }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = questions[current];
+            document.getElementById("question-img").src = q.img;
+            const options = document.getElementById("options");
+            options.innerHTML = "";
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    if (opt === q.answer) score++;
+                    current++;
+                    if (current < questions.length) loadQuestion();
+                    else showResult();
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        function showResult() {
+            const percent = (score / questions.length) * 100;
+            document.getElementById("quiz").innerHTML = `
+                <h2>Your Score: ${score}/${questions.length}</h2>
+                <h3 style="color: ${percent >= 90 ? '#2ecc71' : '#e74c3c'}">
+                    ${percent >= 90 ? "✅ You Passed!" : "❌ Try Again!"}
+                </h3>
+            `;
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</head>
+
+<body>
+    <h1>🦁 Animals Quiz</h1>
+    <div id="quiz">
+        <img id="question-img" src="" alt="Animal Image">
+        <div id="options"></div>
+    </div>
+</body>
+</html>

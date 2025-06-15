@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تعلم الحروف الهجائية</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #081b29, #00bfa6);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .back-button {
+      background-color: transparent;
+      border: 2px solid #00bfa6;
+      color: #00bfa6;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .back-button:hover {
+      background-color: #00bfa6;
+      color: #000;
+    }
+
+    h1 {
+      margin: 20px 0;
+      text-shadow: 0 0 15px #00bfa6;
+      font-size: 28px;
+    }
+
+    .letters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      width: 90%;
+      max-width: 1100px;
+    }
+
+    .letter-card {
+      background-color: rgba(0, 191, 166, 0.15);
+      border: 2px solid #00bfa6;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .letter-card:hover {
+      transform: scale(1.07);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+    }
+
+    .letter-card img {
+      width: 80px;
+      height: auto;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #00bfa6;
+    }
+
+    .letter-card span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media(max-width: 600px) {
+      h1 { font-size: 22px; }
+      .letter-card img { width: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="back-button">الرئيسية</a>
+  </header>
+
+  <h1>تعلم الحروف الهجائية</h1>
+
+  <div class="letters-grid">
+    <div class="letter-card"><img src="img_Letter/أ.jpg" alt="حرف أ" /><span>أ</span></div>
+    <div class="letter-card"><img src="img_Letter/ب.jpg" alt="حرف ب" /><span>ب</span></div>
+    <div class="letter-card"><img src="img_Letter/ت.jpg" alt="حرف ت" /><span>ت</span></div>
+    <div class="letter-card"><img src="img_Letter/ث.jpg" alt="حرف ث" /><span>ث</span></div>
+    <div class="letter-card"><img src="img_Letter/ج.jpg" alt="حرف ج" /><span>ج</span></div>
+    <div class="letter-card"><img src="img_Letter/ح.jpg" alt="حرف ح" /><span>ح</span></div>
+    <div class="letter-card"><img src="img_Letter/خ.jpg" alt="حرف خ" /><span>خ</span></div>
+    <div class="letter-card"><img src="img_Letter/د.jpg" alt="حرف د" /><span>د</span></div>
+    <div class="letter-card"><img src="img_Letter/ذ.jpg" alt="حرف ذ" /><span>ذ</span></div>
+    <div class="letter-card"><img src="img_Letter/ر.jpg" alt="حرف ر" /><span>ر</span></div>
+    <div class="letter-card"><img src="img_Letter/ز.jpg" alt="حرف ز" /><span>ز</span></div>
+    <div class="letter-card"><img src="img_Letter/س.jpg" alt="حرف س" /><span>س</span></div>
+    <div class="letter-card"><img src="img_Letter/ش.jpg" alt="حرف ش" /><span>ش</span></div>
+    <div class="letter-card"><img src="img_Letter/ص.jpg" alt="حرف ص" /><span>ص</span></div>
+    <div class="letter-card"><img src="img_Letter/ض.jpg" alt="حرف ض" /><span>ض</span></div>
+    <div class="letter-card"><img src="img_Letter/ط.jpg" alt="حرف ط" /><span>ط</span></div>
+    <div class="letter-card"><img src="img_Letter/ظ.jpg" alt="حرف ظ" /><span>ظ</span></div>
+    <div class="letter-card"><img src="img_Letter/ع.jpg" alt="حرف ع" /><span>ع</span></div>
+    <div class="letter-card"><img src="img_Letter/غ.jpg" alt="حرف غ" /><span>غ</span></div>
+    <div class="letter-card"><img src="img_Letter/ف.jpg" alt="حرف ف" /><span>ف</span></div>
+    <div class="letter-card"><img src="img_Letter/ق.jpg" alt="حرف ق" /><span>ق</span></div>
+    <div class="letter-card"><img src="img_Letter/ك.jpg" alt="حرف ك" /><span>ك</span></div>
+    <div class="letter-card"><img src="img_Letter/ل.jpg" alt="حرف ل" /><span>ل</span></div>
+    <div class="letter-card"><img src="img_Letter/لا.jpg" alt="حرف لا" /><span>لا</span></div>
+    <div class="letter-card"><img src="img_Letter/م.jpg" alt="حرف م" /><span>م</span></div>
+    <div class="letter-card"><img src="img_Letter/ن.jpg" alt="حرف ن" /><span>ن</span></div>
+    <div class="letter-card"><img src="img_Letter/ه.jpg" alt="حرف ه" /><span>ه</span></div>
+    <div class="letter-card"><img src="img_Letter/و.jpg" alt="حرف و" /><span>و</span></div>
+    <div class="letter-card"><img src="img_Letter/ي.jpg" alt="حرف ي" /><span>ي</span></div>
+  </div>
+
+</body>
+</html>

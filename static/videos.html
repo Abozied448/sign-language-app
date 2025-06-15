@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>قائمة فيديوهات التعلم</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      padding: 20px;
+      background: #121212;
+      color: #00d4ff;
+      margin: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .back-button {
+      display: block;
+      width: 150px;
+      margin: 0 auto 30px auto;
+      padding: 10px 20px;
+      background-color: #1f1f1f;
+      color: #00d4ff;
+      border: 2px solid #00d4ff;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s ease;
+      text-align: center;
+    }
+
+    .back-button:hover {
+      background-color: #00d4ff;
+      color: #121212;
+    }
+
+    #search {
+      display: block;
+      margin: 0 auto 25px auto;
+      padding: 10px 14px;
+      font-size: 16px;
+      width: 320px;
+      max-width: 100%;
+      border: 2px solid #00d4ff;
+      border-radius: 6px;
+      background-color: #1f1f1f;
+      color: #fff;
+      outline-color: #00d4ff;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    #search:focus {
+      border-color: #00d4ff;
+    }
+
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px 40px;
+      justify-content: center;
+      clear: both;
+    }
+
+    .video-item {
+      width: 320px;
+      background: #1f1f1f;
+      padding: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 14px rgba(0, 212, 255, 0.25);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .video-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 18px rgba(0, 212, 255, 0.4);
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+    }
+
+    .title {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+      color: #00d4ff;
+    }
+
+    .download-btn {
+      margin-top: 10px;
+      background-color: #1f1f1f;
+      color: #00d4ff;
+      border: 2px solid #00d4ff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+
+    .download-btn:hover {
+      background-color: #00d4ff;
+      color: #121212;
+    }
+
+    p.no-videos {
+      text-align: center;
+      font-size: 16px;
+      color: #aaa;
+      width: 100%;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">الرئيسية</a>
+  <input type="text" id="search" placeholder="ابحث عن فيديو..." />
+
+  <div class="video-container" id="videoContainer"></div>
+
+  <script>
+    async function loadVideos() {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        alert('يجب تسجيل الدخول أولاً لعرض الفيديوهات.');
+        return;
+      }
+
+      const res = await fetch('/api/videos', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+
+      if (res.status === 401) {
+        alert('انتهت صلاحية الجلسة أو غير مصرح لك. يرجى تسجيل الدخول مرة أخرى.');
+        return;
+      }
+
+      const data = await res.json();
+      const videos = data.videos;
+
+      const container = document.getElementById('videoContainer');
+
+      function displayVideos(filter = '') {
+        container.innerHTML = '';
+        const filtered = videos.filter(name => name.includes(filter));
+        if (filtered.length === 0) {
+          container.innerHTML = '<p class="no-videos">لا توجد فيديوهات مطابقة للبحث</p>';
+          return;
+        }
+        filtered.forEach(name => {
+          const div = document.createElement('div');
+          div.className = 'video-item';
+          div.innerHTML = `
+            <video controls>
+              <source src="/static/videos/${encodeURIComponent(name)}" type="video/mp4" />
+              المتصفح لا يدعم عرض الفيديو
+            </video>
+            <div class="title" title="${name}">${name}</div>
+            <a href="/static/videos/${encodeURIComponent(name)}" download="${name}" class="download-btn">تحميل الفيديو</a>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      displayVideos();
+
+      document.getElementById('search').addEventListener('input', e => {
+        displayVideos(e.target.value.trim());
+      });
+    }
+
+    loadVideos();
+  </script>
+
+</body>
+</html>
